@@ -1,6 +1,7 @@
 # PersonalPortofolioWeb
 
 (Indonesia)
+
 V1:
 - Tampilan dasar portofolio dengan halaman utama.
 - Berisi informasi singkat tentang saya (profil, latar belakang, skill, dan kontak).
@@ -15,6 +16,7 @@ V1:
 Repo ini dilindungi oleh lisensi custom. Hanya boleh digunakan sebagai referensi, tidak boleh dipakai atau dimodifikasi.
 
 (English)
+
 V1:
 - Basic portfolio display with a main page.
 - Contains brief information about me (profile, background, skills, and contact details).
