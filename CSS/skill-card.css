@@ -1,0 +1,40 @@
+/* Font */
+@import url('https://fonts.cdnfonts.com/css/lato');
+@import url('https://fonts.cdnfonts.com/css/poppins');
+
+
+.card-container{
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 1200px;
+}
+
+.card{
+    /* padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    padding: 30px;
+    width: 300px;
+    justify-items: center;
+    text-align: center; */
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    padding: 30px;
+    box-sizing: border-box;
+    font-family:'poppins', sans-serif;
+    font-size: small;
+}
+
+.card img{
+    width: 60px;
+    display: flex;
+    justify-self: center;
+    margin: 10px;
+    border: 2px solid #1d1e22;
+    border-radius: 100%;
+}
