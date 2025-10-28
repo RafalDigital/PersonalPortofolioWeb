@@ -2,7 +2,7 @@
 
 (Indonesia)
 
-V1:
+**V1**:
 - Tampilan dasar portofolio dengan halaman utama.
 - Berisi informasi singkat tentang saya (profil, latar belakang, skill, dan kontak).
 - Desain masih sederhana (fokus pada struktur dan layout).
@@ -11,6 +11,15 @@ V1:
   - CSS
   - JavaScript dasar
 - Belum responsif, akan dibuat responsive di V2.
+
+**V2**:
+- Rombak besar besaran (dibuat ulang)
+- Berisi informasi (tentang saya, skill saya, proyek saya, pengalaman dan pencapaian saya, testimoni saya, dan kontak)
+- Desain minimalist dengan fitur dark & light mode dan mode bahasa indonesia & bahasa inggris
+- Dibuat menggunakan: (FrontEnd)
+  - HTML
+  - CSS
+  - JavaScript
 
 ## Lisensi
 Repo ini dilindungi oleh lisensi custom. Hanya boleh digunakan sebagai referensi, tidak boleh dipakai atau dimodifikasi.
