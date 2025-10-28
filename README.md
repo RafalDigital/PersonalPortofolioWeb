@@ -6,17 +6,17 @@
 - Tampilan dasar portofolio dengan halaman utama.
 - Berisi informasi singkat tentang saya (profil, latar belakang, skill, dan kontak).
 - Desain masih sederhana (fokus pada struktur dan layout).
-- Dibuat menggunakan: 
+- Dibuat menggunakan: (Front-End)
   - HTML
   - CSS
-  - JavaScript dasar
+  - JavaScript
 - Belum responsif, akan dibuat responsive di V2.
 
 **V2**:
-- Rombak besar besaran (dibuat ulang)
-- Berisi informasi (tentang saya, skill saya, proyek saya, pengalaman dan pencapaian saya, testimoni saya, dan kontak)
-- Desain minimalist dengan fitur dark & light mode dan mode bahasa indonesia & bahasa inggris
-- Dibuat menggunakan: (FrontEnd)
+- Rebuild besar-besaran (dibuat ulang sepenuhnya).
+- Berisi informasi tentang saya, keahlian saya, proyek yang pernah saya kerjakan, pengalaman dan pencapaian, testimoni, serta kontak pribadi.
+- Desain minimalis, dengan dilengkapi fitur dark & light mode, serta pilihan bahasa Indonesia & Inggris.
+- Dibuat menggunakan: (Front-End)
   - HTML
   - CSS
   - JavaScript
@@ -26,15 +26,24 @@ Repo ini dilindungi oleh lisensi custom. Hanya boleh digunakan sebagai referensi
 
 (English)
 
-V1:
-- Basic portfolio display with a main page.
-- Contains brief information about me (profile, background, skills, and contact details).
-- The design is still simple (focus on structure and layout).
-- Created using: 
+**V1**:
+- Basic portfolio layout with a main homepage.
+- Contains brief information about me (profile, background, skills, and contact).
+- Simple design focusing on structure and layout.
+- Built using: (Front-End)
   - HTML
   - CSS
-  - Basic JavaScript
-- Not yet responsive, will be made responsive in V2.
+  - JavaScript
+- Not yet responsive, responsiveness will be implemented in V2.
+
+**V2**:
+- Complete rebuild (fully redesigned from scratch).
+- Contains information about me, my skills, projects, experiences and achievements, testimonials, and contact details.
+- Features a minimalist design with dark & light mode support, as well as Indonesian & English language options
+- Built using: (Front-End)
+  - HTML
+  - CSS
+  - JavaScript
 
 ## License
 This repository is protected by a custom license. It may only be used as a reference and may not be used or modified.
