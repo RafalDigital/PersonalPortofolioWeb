@@ -20,11 +20,15 @@ function initSlider(type) {
   const slides = document.querySelectorAll(`.${type}-slide`);
   const dotsContainer = document.getElementById(`${type}-dots`);
 
+  // Pastikan dotsContainer ada sebelum membuat dots
+  if (!dotsContainer) return;
+
   // Create dots
   slides.forEach((_, index) => {
     const dot = document.createElement("div");
     dot.className = "dot";
     if (index === 0) dot.classList.add("active");
+    // Gunakan fungsi changeSlide atau goToSlide untuk penanganan index yang terpusat
     dot.onclick = () => goToSlide(type, index);
     dotsContainer.appendChild(dot);
   });
@@ -34,60 +38,74 @@ function showSlide(type, index) {
   const slides = document.querySelectorAll(`.${type}-slide`);
   const dots = document.querySelectorAll(`#${type}-dots .dot`);
 
-  // Loop around
+  if (slides.length === 0) return; // Tambahkan cek untuk slide kosong
+
+  let currentIndex = index;
+
+  // Loop around (Perbaikan logika index)
   if (index >= slides.length) {
-    if (type === "project") projectIndex = 0;
-    else testimonialIndex = 0;
+    currentIndex = 0;
   }
   if (index < 0) {
-    if (type === "project") projectIndex = slides.length - 1;
-    else testimonialIndex = slides.length - 1;
+    currentIndex = slides.length - 1;
   }
 
-  const currentIndex = type === "project" ? projectIndex : testimonialIndex;
+  // Update global index state
+  if (type === "project") {
+    projectIndex = currentIndex;
+  } else {
+    testimonialIndex = currentIndex;
+  }
 
   // Hide all slides
   slides.forEach((slide) => slide.classList.remove("active"));
-  dots.forEach((dot) => dot.classList.remove("active"));
+  // Pastikan dots ada sebelum menghapus class
+  if (dots.length > 0) {
+    dots.forEach((dot) => dot.classList.remove("active"));
+  }
 
   // Show current slide
   slides[currentIndex].classList.add("active");
-  dots[currentIndex].classList.add("active");
+  if (dots[currentIndex]) {
+    // Pastikan dot ada sebelum menambah class
+    dots[currentIndex].classList.add("active");
+  }
 }
 
 function changeSlide(type, direction) {
   if (type === "project") {
-    projectIndex += direction;
-    showSlide("project", projectIndex);
+    // Panggil showSlide dengan index yang baru dihitung.
+    // showSlide akan mengurus looping dan update projectIndex/testimonialIndex.
+    showSlide("project", projectIndex + direction);
   } else {
-    testimonialIndex += direction;
-    showSlide("testimonial", testimonialIndex);
+    showSlide("testimonial", testimonialIndex + direction);
   }
 }
 
 function goToSlide(type, index) {
-  if (type === "project") {
-    projectIndex = index;
-    showSlide("project", projectIndex);
-  } else {
-    testimonialIndex = index;
-    showSlide("testimonial", testimonialIndex);
-  }
+  // Panggil showSlide langsung, showSlide akan mengurus update index state.
+  showSlide(type, index);
 }
 
 // Auto slide for testimonials
+// Ubah setInterval menjadi menggunakan changeSlide untuk konsistensi
 setInterval(() => {
-  testimonialIndex++;
-  showSlide("testimonial", testimonialIndex);
+  changeSlide("testimonial", 1);
 }, 5000);
 
 // Form submit handler
 function handleSubmit(e) {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const subject = document.getElementById("subject").value;
-  const message = document.getElementById("message").value;
+  const email = document.getElementById("email")
+    ? document.getElementById("email").value
+    : "";
+  const subject = document.getElementById("subject")
+    ? document.getElementById("subject").value
+    : "";
+  const message = document.getElementById("message")
+    ? document.getElementById("message").value
+    : "";
 
   // Simulate form submission
   // alert(
@@ -95,7 +113,9 @@ function handleSubmit(e) {
   // );
 
   // Reset form
-  e.target.reset();
+  if (e.target.reset) {
+    e.target.reset();
+  }
 }
 
 // Navbar scroll effect
@@ -194,33 +214,45 @@ function openProjectModal(projectId) {
 
   // Set technologies
   const techStackContainer = document.getElementById("modalTechStack");
-  techStackContainer.innerHTML = "";
-  project.technologies.forEach((tech) => {
-    const tag = document.createElement("span");
-    tag.className = "tech-tag";
-    tag.textContent = tech;
-    techStackContainer.appendChild(tag);
-  });
+  // Pastikan techStackContainer ada sebelum memanipulasinya
+  if (techStackContainer) {
+    techStackContainer.innerHTML = "";
+    project.technologies.forEach((tech) => {
+      const tag = document.createElement("span");
+      tag.className = "tech-tag";
+      tag.textContent = tech;
+      techStackContainer.appendChild(tag);
+    });
+  }
 
   // Show modal
   const modal = document.getElementById("projectModal");
-  modal.classList.add("active");
-  document.body.style.overflow = "hidden";
+  if (modal) {
+    // Pastikan modal ada
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+  }
 }
 
 // Close project modal
 function closeProjectModal() {
   const modal = document.getElementById("projectModal");
-  modal.classList.remove("active");
-  document.body.style.overflow = "auto";
+  if (modal) {
+    // Pastikan modal ada
+    modal.classList.remove("active");
+    document.body.style.overflow = "auto";
+  }
 }
 
 // Close modal when clicking outside
-document.getElementById("projectModal").addEventListener("click", function (e) {
-  if (e.target === this) {
-    closeProjectModal();
-  }
-});
+const projectModal = document.getElementById("projectModal");
+if (projectModal) {
+  projectModal.addEventListener("click", function (e) {
+    if (e.target === this) {
+      closeProjectModal();
+    }
+  });
+}
 
 // Close modal with ESC key
 document.addEventListener("keydown", function (e) {
@@ -238,15 +270,19 @@ const body = document.body;
 
 // Open/Close Mobile Menu
 function toggleMobileMenu() {
-  hamburgerBtn.classList.toggle("active");
-  mobileMenu.classList.toggle("active");
-  mobileMenuOverlay.classList.toggle("active");
-  body.classList.toggle("menu-open");
+  // Hanya toggle jika elemen-elemen penting ada
+  if (hamburgerBtn && mobileMenu && mobileMenuOverlay) {
+    hamburgerBtn.classList.toggle("active");
+    mobileMenu.classList.toggle("active");
+    mobileMenuOverlay.classList.toggle("active");
+    body.classList.toggle("menu-open");
+  }
 }
 
 // Event Listeners
-hamburgerBtn.addEventListener("click", toggleMobileMenu);
-mobileMenuOverlay.addEventListener("click", toggleMobileMenu);
+if (hamburgerBtn) hamburgerBtn.addEventListener("click", toggleMobileMenu);
+if (mobileMenuOverlay)
+  mobileMenuOverlay.addEventListener("click", toggleMobileMenu);
 
 // Close menu when clicking menu links
 mobileMenuLinks.forEach((link) => {
@@ -274,46 +310,55 @@ mobileMenuLinks.forEach((link) => {
 
 // Close menu on ESC key
 document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && mobileMenu.classList.contains("active")) {
+  if (
+    e.key === "Escape" &&
+    mobileMenu &&
+    mobileMenu.classList.contains("active")
+  ) {
     toggleMobileMenu();
   }
 });
 
 // Prevent menu close when clicking inside mobile menu
-mobileMenu.addEventListener("click", (e) => {
-  e.stopPropagation();
-});
+if (mobileMenu) {
+  mobileMenu.addEventListener("click", (e) => {
+    e.stopPropagation();
+  });
+}
 
 // Dark Mode Toggle (Desktop)
-document.getElementById("DarkModeNav").addEventListener("click", () => {
-  const body = document.body;
-  const DarkBTN = document.querySelector(".darkBTN");
-  const LightBTN = document.querySelector(".lightBTN");
-  const toggleSwitch = document.querySelector(".toggle-switch");
+const DarkModeNav = document.getElementById("DarkModeNav");
+if (DarkModeNav) {
+  DarkModeNav.addEventListener("click", () => {
+    const body = document.body;
+    const DarkBTN = document.querySelector(".darkBTN");
+    const LightBTN = document.querySelector(".lightBTN");
+    const toggleSwitch = document.querySelector(".toggle-switch");
 
-  // Toggle light mode class
-  body.classList.toggle("light-mode");
+    // Toggle light mode class
+    body.classList.toggle("light-mode");
 
-  // Update button states
-  if (body.classList.contains("light-mode")) {
-    DarkBTN.classList.remove("active");
-    LightBTN.classList.add("active");
-    if (toggleSwitch) toggleSwitch.classList.remove("active");
-    // Save preference
-    localStorage.setItem("theme", "light");
-  } else {
-    LightBTN.classList.remove("active");
-    DarkBTN.classList.add("active");
-    if (toggleSwitch) toggleSwitch.classList.add("active");
-    // Save preference
-    localStorage.setItem("theme", "dark");
-  }
-});
+    // Update button states
+    if (body.classList.contains("light-mode")) {
+      if (DarkBTN) DarkBTN.classList.remove("active");
+      if (LightBTN) LightBTN.classList.add("active");
+      if (toggleSwitch) toggleSwitch.classList.remove("active");
+      // Save preference
+      localStorage.setItem("theme", "light");
+    } else {
+      if (LightBTN) LightBTN.classList.remove("active");
+      if (DarkBTN) DarkBTN.classList.add("active");
+      if (toggleSwitch) toggleSwitch.classList.add("active");
+      // Save preference
+      localStorage.setItem("theme", "dark");
+    }
+  });
+}
 
 // Mobile Dark Mode Toggle
-document
-  .getElementById("mobileDarkModeToggle")
-  .addEventListener("click", () => {
+const mobileDarkModeToggle = document.getElementById("mobileDarkModeToggle");
+if (mobileDarkModeToggle) {
+  mobileDarkModeToggle.addEventListener("click", () => {
     const body = document.body;
     const toggleSwitch = document.querySelector(".toggle-switch");
     const DarkBTN = document.querySelector(".darkBTN");
@@ -323,19 +368,20 @@ document
     body.classList.toggle("light-mode");
 
     // Update toggle switch
-    toggleSwitch.classList.toggle("active");
+    if (toggleSwitch) toggleSwitch.classList.toggle("active");
 
     // Update desktop buttons
     if (body.classList.contains("light-mode")) {
-      DarkBTN.classList.remove("active");
-      LightBTN.classList.add("active");
+      if (DarkBTN) DarkBTN.classList.remove("active");
+      if (LightBTN) LightBTN.classList.add("active");
       localStorage.setItem("theme", "light");
     } else {
-      LightBTN.classList.remove("active");
-      DarkBTN.classList.add("active");
+      if (LightBTN) LightBTN.classList.remove("active");
+      if (DarkBTN) DarkBTN.classList.add("active");
       localStorage.setItem("theme", "dark");
     }
   });
+}
 
 // Load saved theme on page load
 window.addEventListener("DOMContentLoaded", () => {
@@ -347,14 +393,14 @@ window.addEventListener("DOMContentLoaded", () => {
 
   if (savedTheme === "light") {
     body.classList.add("light-mode");
-    DarkBTN.classList.remove("active");
-    LightBTN.classList.add("active");
+    if (DarkBTN) DarkBTN.classList.remove("active");
+    if (LightBTN) LightBTN.classList.add("active");
     if (toggleSwitch) toggleSwitch.classList.remove("active");
   } else {
     // Default dark mode
     body.classList.remove("light-mode");
-    LightBTN.classList.remove("active");
-    DarkBTN.classList.add("active");
+    if (LightBTN) LightBTN.classList.remove("active");
+    if (DarkBTN) DarkBTN.classList.add("active");
     if (toggleSwitch) toggleSwitch.classList.add("active");
   }
 
@@ -504,49 +550,22 @@ const languageContent = {
 let currentLang = "id";
 
 // Language Toggle (Desktop)
-document.getElementById("LanguageNav").addEventListener("click", () => {
-  const IDBTN = document.querySelector(".idBTN");
-  const ENBTN = document.querySelector(".enBTN");
-
-  // Toggle language
-  currentLang = currentLang === "id" ? "en" : "id";
-
-  // Update button states
-  if (currentLang === "en") {
-    IDBTN.classList.remove("active");
-    ENBTN.classList.add("active");
-  } else {
-    ENBTN.classList.remove("active");
-    IDBTN.classList.add("active");
-  }
-
-  // Update content
-  updateLanguageContent(currentLang);
-
-  // Update mobile indicator
-  updateMobileLanguageIndicator(currentLang);
-
-  // Save preference
-  localStorage.setItem("language", currentLang);
-});
-
-// Mobile Language Toggle
-document
-  .getElementById("mobileLanguageToggle")
-  .addEventListener("click", () => {
+const LanguageNav = document.getElementById("LanguageNav");
+if (LanguageNav) {
+  LanguageNav.addEventListener("click", () => {
     const IDBTN = document.querySelector(".idBTN");
     const ENBTN = document.querySelector(".enBTN");
 
     // Toggle language
     currentLang = currentLang === "id" ? "en" : "id";
 
-    // Update desktop buttons
+    // Update button states
     if (currentLang === "en") {
-      IDBTN.classList.remove("active");
-      ENBTN.classList.add("active");
+      if (IDBTN) IDBTN.classList.remove("active");
+      if (ENBTN) ENBTN.classList.add("active");
     } else {
-      ENBTN.classList.remove("active");
-      IDBTN.classList.add("active");
+      if (ENBTN) ENBTN.classList.remove("active");
+      if (IDBTN) IDBTN.classList.add("active");
     }
 
     // Update content
@@ -558,100 +577,194 @@ document
     // Save preference
     localStorage.setItem("language", currentLang);
   });
+}
+
+// Mobile Language Toggle
+const mobileLanguageToggle = document.getElementById("mobileLanguageToggle");
+if (mobileLanguageToggle) {
+  mobileLanguageToggle.addEventListener("click", () => {
+    const IDBTN = document.querySelector(".idBTN");
+    const ENBTN = document.querySelector(".enBTN");
+
+    // Toggle language
+    currentLang = currentLang === "id" ? "en" : "id";
+
+    // Update desktop buttons
+    if (currentLang === "en") {
+      if (IDBTN) IDBTN.classList.remove("active");
+      if (ENBTN) ENBTN.classList.add("active");
+    } else {
+      if (ENBTN) ENBTN.classList.remove("active");
+      if (IDBTN) IDBTN.classList.add("active");
+    }
+
+    // Update content
+    updateLanguageContent(currentLang);
+
+    // Update mobile indicator
+    updateMobileLanguageIndicator(currentLang);
+
+    // Save preference
+    localStorage.setItem("language", currentLang);
+  });
+}
 
 // Update language content function
 function updateLanguageContent(lang) {
   const content = languageContent[lang];
 
   // Update navbar
-  document.querySelectorAll("nav a").forEach((link, index) => {
-    const keys = ["about", "project", "experience", "contact"];
-    if (keys[index]) {
-      link.textContent = content[keys[index]];
+  document.querySelectorAll("nav a").forEach((link) => {
+    const href = link.getAttribute("href").substring(1); // Ambil id section
+    if (content[href]) {
+      link.textContent = content[href];
     }
   });
 
   // Update mobile menu
   const menuTexts = document.querySelectorAll(".mobile-menu .menu-text");
-  const menuKeys = ["about", "project", "experience", "contact"];
-  menuTexts.forEach((text, index) => {
-    text.textContent = content[menuKeys[index]];
+  menuTexts.forEach((text) => {
+    const parentLink = text.closest(".mobile-menu-link");
+    const targetId = parentLink
+      ? parentLink.getAttribute("href").substring(1)
+      : null;
+    if (targetId && content[targetId]) {
+      text.textContent = content[targetId];
+    }
   });
 
   // Update hero
-  document.querySelector(".hero h1").textContent = content.heroTitle;
-  document.querySelector(".hero p").textContent = content.heroSubtitle;
+  const heroH1 = document.querySelector(".hero h1");
+  if (heroH1) heroH1.textContent = content.heroTitle;
+  const heroP = document.querySelector(".hero p");
+  if (heroP) heroP.textContent = content.heroSubtitle;
   const heroBtn = document.querySelector(".hero-btn");
-  heroBtn.childNodes[0].textContent = content.heroBtn + " ";
+  if (heroBtn && heroBtn.childNodes[0])
+    heroBtn.childNodes[0].textContent = content.heroBtn + " ";
 
   // Update about
-  document.querySelector("#about .section-title").textContent =
-    content.aboutTitle;
+  const aboutTitle = document.querySelector("#about .section-title");
+  if (aboutTitle) aboutTitle.textContent = content.aboutTitle;
   const aboutTexts = document.querySelectorAll(".about-text p");
-  aboutTexts[0].innerHTML = content.aboutText1;
-  aboutTexts[1].innerHTML = content.aboutText2;
-  aboutTexts[2].innerHTML = content.aboutText3;
-  aboutTexts[3].innerHTML = content.aboutText4;
+  if (aboutTexts[0]) aboutTexts[0].innerHTML = content.aboutText1;
+  if (aboutTexts[1]) aboutTexts[1].innerHTML = content.aboutText2;
+  if (aboutTexts[2]) aboutTexts[2].innerHTML = content.aboutText3;
+  if (aboutTexts[3]) aboutTexts[3].innerHTML = content.aboutText4;
 
   // Update skills
-  document.querySelector("#skills .section-title").textContent =
-    content.skillsTitle;
+  const skillsTitle = document.querySelector("#skills .section-title");
+  if (skillsTitle) skillsTitle.textContent = content.skillsTitle;
 
   // Update projects
-  document.querySelector("#project .section-title").textContent =
-    content.projectsTitle;
+  const projectsTitle = document.querySelector("#project .section-title");
+  if (projectsTitle) projectsTitle.textContent = content.projectsTitle;
+
   const projectSlides = document.querySelectorAll(".project-slide");
-  projectSlides[0].querySelector("h3").textContent = content.project1Title;
-  projectSlides[0].querySelector("p").textContent = content.project1Desc;
-  projectSlides[1].querySelector("h3").textContent = content.project2Title;
-  projectSlides[1].querySelector("p").textContent = content.project2Desc;
-  projectSlides[2].querySelector("h3").textContent = content.project3Title;
-  projectSlides[2].querySelector("p").textContent = content.project3Desc;
+  // Perlu diperhatikan bahwa ini mengasumsikan urutan slide sesuai dengan penamaan project1/2/3Title
+  if (projectSlides[0]) {
+    const h3 = projectSlides[0].querySelector("h3");
+    const p = projectSlides[0].querySelector("p");
+    if (h3) h3.textContent = content.project1Title;
+    if (p) p.textContent = content.project1Desc;
+  }
+  if (projectSlides[1]) {
+    const h3 = projectSlides[1].querySelector("h3");
+    const p = projectSlides[1].querySelector("p");
+    if (h3) h3.textContent = content.project2Title;
+    if (p) p.textContent = content.project2Desc;
+  }
+  if (projectSlides[2]) {
+    const h3 = projectSlides[2].querySelector("h3");
+    const p = projectSlides[2].querySelector("p");
+    if (h3) h3.textContent = content.project3Title;
+    if (p) p.textContent = content.project3Desc;
+  }
 
   // Update project buttons
   document.querySelectorAll(".project-btn").forEach((btn) => {
-    btn.childNodes[0].textContent = content.projectBtn + " ";
+    if (btn.childNodes[0])
+      btn.childNodes[0].textContent = content.projectBtn + " ";
   });
 
   // Update experience
-  document.querySelector("#experience .section-title").textContent =
-    content.experienceTitle;
+  const experienceTitle = document.querySelector("#experience .section-title");
+  if (experienceTitle) experienceTitle.textContent = content.experienceTitle;
   const expEmpty = document.querySelector(".blank-card h3");
   if (expEmpty) expEmpty.textContent = content.experienceEmpty;
 
   // Update testimonials
-  document.querySelector("#testimonials .section-title").textContent =
-    content.testimonialsTitle;
+  const testimonialsTitle = document.querySelector(
+    "#testimonials .section-title"
+  );
+  if (testimonialsTitle)
+    testimonialsTitle.textContent = content.testimonialsTitle;
   const testEmpty = document.querySelector(".blank-testimonial-text");
   if (testEmpty) testEmpty.textContent = content.testimonialsEmpty;
 
   // Update contact
-  document.querySelector("#contact .section-title").textContent =
-    content.contactTitle;
-  document.querySelector('label[for="email"]').textContent =
-    content.contactEmail;
-  document.querySelector("#email").placeholder =
-    content.contactEmailPlaceholder;
-  document.querySelector('label[for="subject"]').textContent =
-    content.contactSubject;
-  document.querySelector("#subject").placeholder =
-    content.contactSubjectPlaceholder;
-  document.querySelector('label[for="message"]').textContent =
-    content.contactMessage;
-  document.querySelector("#message").placeholder =
-    content.contactMessagePlaceholder;
+  const contactTitle = document.querySelector("#contact .section-title");
+  if (contactTitle) contactTitle.textContent = content.contactTitle;
+
+  const emailLabel = document.querySelector('label[for="email"]');
+  if (emailLabel) emailLabel.textContent = content.contactEmail;
+  const emailInput = document.querySelector("#email");
+  if (emailInput) emailInput.placeholder = content.contactEmailPlaceholder;
+
+  const subjectLabel = document.querySelector('label[for="subject"]');
+  if (subjectLabel) subjectLabel.textContent = content.contactSubject;
+  const subjectInput = document.querySelector("#subject");
+  if (subjectInput)
+    subjectInput.placeholder = content.contactSubjectPlaceholder;
+
+  const messageLabel = document.querySelector('label[for="message"]');
+  if (messageLabel) messageLabel.textContent = content.contactMessage;
+  const messageInput = document.querySelector("#message");
+  if (messageInput)
+    messageInput.placeholder = content.contactMessagePlaceholder;
+
   const submitBtn = document.querySelector(".submit-btn");
-  submitBtn.childNodes[0].textContent = content.contactBtn + " ";
+  if (submitBtn && submitBtn.childNodes[0])
+    submitBtn.childNodes[0].textContent = content.contactBtn + " ";
 
   // Update mobile settings text
-  document.querySelector(".mobile-settings .setting-text").textContent =
-    content.darkModeText;
-  document.querySelector(".mobile-settings .lang-text").textContent =
-    content.languageText;
+  const darkModeText = document.querySelector(".mobile-settings .setting-text");
+  if (darkModeText) darkModeText.textContent = content.darkModeText;
+  const languageText = document.querySelector(".mobile-settings .lang-text");
+  if (languageText) languageText.textContent = content.languageText;
 }
 
 // Update mobile language indicator
 function updateMobileLanguageIndicator(lang) {
   const currentLangElement = document.querySelector(".current-lang");
-  currentLangElement.textContent = lang.toUpperCase();
+  if (currentLangElement) {
+    currentLangElement.textContent = lang.toUpperCase();
+  }
+}
+
+// Load saved language
+function loadSavedLanguage() {
+  const savedLang = localStorage.getItem("language");
+  const IDBTN = document.querySelector(".idBTN");
+  const ENBTN = document.querySelector(".enBTN");
+
+  if (savedLang) {
+    currentLang = savedLang;
+
+    if (currentLang === "en") {
+      if (IDBTN) IDBTN.classList.remove("active");
+      if (ENBTN) ENBTN.classList.add("active");
+    } else {
+      if (ENBTN) ENBTN.classList.remove("active");
+      if (IDBTN) IDBTN.classList.add("active");
+    }
+
+    updateLanguageContent(currentLang);
+    updateMobileLanguageIndicator(currentLang);
+  } else {
+    // Default bahasa Indonesia
+    currentLang = "id";
+    if (IDBTN) IDBTN.classList.add("active"); // Pastikan default ID aktif
+    localStorage.setItem("language", "id");
+    // Tidak perlu update content karena default sudah id
+  }
 }
